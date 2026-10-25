@@ -1,0 +1,19 @@
+{% extends "guest_base.html" %}
+{% block title %}{{ t.ty_title }} — {{ hotel['hotel_name'] }}{% endblock %}
+{% block content %}
+<section class="thanks">
+  <div class="thanks-top">
+    <div class="ok-circle"><svg><use href="#i-check"/></svg></div>
+    <h1>{{ t.ty_title }}</h1>
+    <p class="g-sub">{{ t['ty_' ~ band] }}{% if row['contact_requested'] %} {{ t.ty_contact }}{% endif %}</p>
+  </div>
+  {# Same card for every rating: showing it only to happy guests would be review gating. #}
+  <div class="share-card" data-share>
+    <h3>{{ t.share_title }}</h3>
+    <p>{{ t.share_sub }}</p>
+    <a class="g-btn" href="{{ hotel['google_review_url'] }}" target="_blank" rel="noopener noreferrer"
+       data-copy="{{ row['message'] }}" data-copied="{{ t.copied }}">{{ t.share_btn if row['message'] else t.share_btn_notext }}</a>
+    <a class="g-link" href="{{ back_url }}" data-done="{{ t.done_msg }}">{{ t.done }}</a>
+  </div>
+</section>
+{% endblock %}

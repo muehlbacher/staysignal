@@ -1,0 +1,79 @@
+{% extends "guest_base.html" %}
+{% block content %}
+<form method="post" class="flow" id="flow" data-stars='{{ t.stars|tojson }}' data-send="{{ t.send }}" data-send-only="{{ t.send_only }}">
+  <input type="hidden" name="table" value="{{ table }}">
+
+  <section class="step step-1" data-step="1">
+    <header class="g-head">
+      <div class="g-avatar" aria-hidden="true">{{ hotel['hotel_name'][:1]|upper }}</div>
+      <div class="g-venue"><b>{{ hotel['hotel_name'] }}</b><span>{% if table %}{{ t.table }} {{ table }} · {% endif %}{{ when }}, {{ time }}</span></div>
+      {% set other = 'de' if lang == 'en' else 'en' %}
+      <a class="g-round g-lang" href="?lang={{ other }}{% if table %}&amp;table={{ table }}{% endif %}" hreflang="{{ other }}"
+         aria-label="{{ 'Auf Deutsch anzeigen' if other == 'de' else 'Show in English' }}">{{ other|upper }}</a>
+      <button type="button" class="g-round g-close" data-close aria-label="{{ t.close }}">
+        <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </header>
+
+    <div class="step-1-body">
+      <h1>{{ question }}</h1>
+      <p class="g-sub">{{ t.sub }}</p>
+      <div class="star-card">
+        <div class="stars stars-lg" role="radiogroup" aria-label="{{ question }}">
+          {% for n in range(1, 6) %}
+          <input class="star-input" type="radio" name="rating" id="r{{ n }}" value="{{ n }}" required>
+          <label class="star" for="r{{ n }}" data-n="{{ n }}" title="{{ t.stars[n-1] }}"><svg><use href="#i-star"/></svg><span class="nojs-label">{{ t.stars[n-1] }}</span></label>
+          {% endfor %}
+        </div>
+        <div class="star-word" data-word aria-live="polite">{{ t.tap }}</div>
+        <div class="star-ends"><span>{{ t.stars[0] }}</span><span>{{ t.stars[4] }}</span></div>
+      </div>
+    </div>
+
+    <p class="g-foot"><svg viewBox="0 0 24 24" class="i-lock"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>{{ t.footer }}</p>
+  </section>
+
+  <section class="step step-2" data-step="2">
+    <header class="g-head g-head-2">
+      <button type="button" class="g-round" data-back aria-label="{{ t.back }}"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <span class="g-step">{{ t.step }}</span>
+    </header>
+
+    <div class="stars stars-sm" aria-hidden="true">
+      {% for n in range(1, 6) %}<label class="star" for="r{{ n }}" data-n="{{ n }}"><svg><use href="#i-star"/></svg></label>{% endfor %}
+    </div>
+    <div class="star-word star-word-sm" data-word></div>
+
+    {% for b in ['low', 'mid', 'high'] %}
+    <fieldset class="band" data-band="{{ b }}">
+      <legend><h2>{{ t['h_' ~ b] }}</h2></legend>
+      <div class="chips">
+        {% for key in tags[b] %}<label class="chip"><input type="checkbox" name="tags" value="{{ key }}"><svg><use href="#i-check"/></svg>{{ t.tags[key] }}</label>{% endfor %}
+      </div>
+    </fieldset>
+    {% endfor %}
+
+    <label class="g-label" for="message" data-text-label>{{ t.txt_mid }}</label>
+    <textarea id="message" name="message" rows="3" maxlength="2000" placeholder="{{ t.ph_mid }}"
+      {% for b in ['low', 'mid', 'high'] %}data-label-{{ b }}="{{ t['txt_' ~ b] }}" data-ph-{{ b }}="{{ t['ph_' ~ b] }}" {% endfor %}></textarea>
+
+    <div class="opt-card" data-band-extra="low">
+      <label class="opt-check"><input type="checkbox" name="contact_requested" value="1" data-contact-toggle>
+        <span><b>{{ t.contact_title }}</b><small>{{ t.contact_sub }}</small></span></label>
+      <div class="contact-fields" data-contact-fields>
+        <input name="contact_name" maxlength="80" autocomplete="name" placeholder="{{ t.contact_name }}">
+        <input name="contact_info" maxlength="120" autocomplete="email" placeholder="{{ t.contact_info }}">
+      </div>
+    </div>
+    <div class="opt-card" data-band-extra="high">
+      <label class="opt-check"><input type="checkbox" name="thank_team" value="1">
+        <span><b>{{ t.team_title }}</b><small>{{ t.team_sub }}</small></span></label>
+    </div>
+
+    <div class="send-bar">
+      <button class="g-btn" type="submit" data-send-btn>{{ t.send }}</button>
+      <p>{{ t.anon }}</p>
+    </div>
+  </section>
+</form>
+{% endblock %}
