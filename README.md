@@ -29,7 +29,25 @@ Open `http://127.0.0.1:5000`. Admin: `/login`; public guest page: `/r/alpine-hav
 
 On first run, the initial settings are created. The initial password is hashed. To change the hotel and add its actual Google review URL, log in and open **Settings**.
 
-## Deploy
+## Deploy with Docker
+```bash
+cp .env.example .env        # fill in SECRET_KEY and ADMIN_PASSWORD
+docker compose up -d --build
+```
+The app listens on port 8000 (`HOST_PORT` in `.env` to change). The SQLite database lives in the `staysignal-data` volume at `/data`, so it survives rebuilds and restarts. Compose refuses to start without `SECRET_KEY` and `ADMIN_PASSWORD`; `ADMIN_PASSWORD` only seeds the very first start; change it later in **Settings**.
+
+Put it behind a reverse proxy that terminates HTTPS (Caddy, Traefik, nginx); the container trusts `X-Forwarded-Proto`, so QR codes and links use `https://`. It runs a single worker on purpose, because SQLite handles one writer at a time.
+
+Backup: `docker compose cp web:/data/hotel_reviews.db ./backup.db`
+
+Without compose:
+```bash
+docker build -t staysignal .
+docker run -d -p 8000:8000 -v staysignal-data:/data \
+  -e SECRET_KEY=... -e ADMIN_PASSWORD=... staysignal
+```
+
+## Deploy without Docker
 For a quick pilot, deploy to a Python host that supports persistent disks/volumes:
 - Build/install: `pip install -r requirements.txt`
 - Start command: `uvicorn app:app --host 0.0.0.0 --port $PORT --proxy-headers` (see `Procfile`)

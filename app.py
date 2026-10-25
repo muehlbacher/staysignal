@@ -20,7 +20,7 @@ LOCAL_TZ = ZoneInfo(os.environ.get("TIMEZONE", "Europe/Vienna"))
 ASSET_VERSION = str(int(max(os.path.getmtime(os.path.join(BASE_DIR, "static", f)) for f in os.listdir(os.path.join(BASE_DIR, "static")))))
 
 log = logging.getLogger("staysignal")
-if APP_SECRET == "dev-only-change-me" or ADMIN_PASSWORD == "change-me-now":
+if APP_SECRET == "dev-only-change-me" or ADMIN_PASSWORD == "admin":
     log.warning("SECRET_KEY or ADMIN_PASSWORD is using the insecure dev default. Set them before deploying.")
 
 app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)

@@ -1,0 +1,18 @@
+services:
+  web:
+    build: .
+    image: staysignal:latest
+    restart: unless-stopped
+    ports:
+      - "${HOST_PORT:-8000}:8000"
+    environment:
+      # Required: compose refuses to start until these are set (e.g. in a .env file next to this one).
+      SECRET_KEY: ${SECRET_KEY:?Set SECRET_KEY to a long random string}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?Set ADMIN_PASSWORD}
+      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
+      TIMEZONE: ${TIMEZONE:-Europe/Vienna}
+    volumes:
+      - staysignal-data:/data
+
+volumes:
+  staysignal-data:
