@@ -1,23 +1,78 @@
-{% extends "base.html" %}{% block title %}StaySignal — Guest feedback made useful{% endblock %}
-{% block content %}
-<section class="hero">
-  <div class="hero-copy"><div class="eyebrow"><span class="eyebrow-line"></span> HOTEL REPUTATION, REIMAGINED</div>
-    <h1>Every stay has a story.<br><em>Make it count.</em></h1>
-    <p class="hero-lead">Turn guest feedback into better stays, stronger service and a clearer picture of what guests really think.</p>
-    <div class="hero-actions"><a class="button primary" href="{{ url_for('login') }}">Open hotel dashboard <span>↗</span></a><a class="text-link" href="{{ url_for('review', slug=hotel['slug']) }}">Preview guest experience →</a></div>
-    <div class="hero-note"><span class="status-dot"></span> A simple QR experience for modern hotels</div>
-  </div>
-  <div class="hero-visual">
-    <div class="visual-orb orb-one"></div><div class="visual-orb orb-two"></div>
-    <div class="phone">
-      <div class="phone-top"><span>9:41</span><span>● ● ●</span></div>
-      <div class="phone-content"><div class="mini-logo">S</div><div class="mini-eyebrow">YOUR STAY, YOUR VOICE</div><h3>How was your<br>stay with us?</h3><p>Your feedback helps us make every visit special.</p>
-      <div class="star-row"><span>★</span><span>★</span><span>★</span><span>★</span><span class="star-muted">★</span></div><div class="phone-line"></div><div class="phone-line short"></div><div class="phone-button">Share feedback</div></div>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ffffff">
+<title>StaySignal — Guest feedback made useful</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', path='landing.css') }}?v={{ asset_v }}">
+</head>
+<body class="landing">
+
+<header class="l-nav" id="top">
+  <a class="l-logo" href="/">STAYSIGNAL</a>
+  <input type="checkbox" id="l-menu" class="l-menu-toggle" aria-label="Menu">
+  <label for="l-menu" class="l-burger" aria-hidden="true"><span></span><span></span><span></span></label>
+  <nav class="l-links">
+    <a href="#top">Home</a>
+    <a href="#about">About</a>
+    <a href="#how">How it works</a>
+    {% if session.get('logged_in') %}<a href="{{ url_for('dashboard') }}">Dashboard</a>{% else %}<a href="{{ url_for('login') }}">Login</a>{% endif %}
+  </nav>
+</header>
+
+<main class="l-main">
+  <section class="l-left">
+    <h1>Honest guest<br>feedback.</h1>
+    <p class="l-lead">One QR code, one tap on the stars and a short follow-up. StaySignal turns every visit into clear, usable feedback for your team, without logins and without review gating.</p>
+    <div class="l-actions">
+      <a class="l-btn" href="{{ url_for('review', slug=hotel['slug']) }}">Try the guest page</a>
+      <a class="l-btn l-btn-ghost" href="{{ url_for('login') }}">Open dashboard</a>
     </div>
-    <div class="float-card card-rating"><span class="float-label">GUEST SATISFACTION</span><div class="float-number">4.8 <span>★★★★★</span></div><div class="float-caption">Every opinion matters</div></div>
-    <div class="float-card card-qr"><div class="fake-qr">{% for i in range(49) %}<i class="q{{ (i*7+i//3)%5 }}"></i>{% endfor %}</div><div><b>One scan away</b><small>Feedback in under a minute</small></div></div>
-  </div>
-</section>
-<section class="feature-strip"><div><span class="feature-num">01</span><b>Scan</b><p>One QR code at reception.</p></div><div><span class="feature-num">02</span><b>Listen</b><p>Capture honest guest feedback.</p></div><div><span class="feature-num">03</span><b>Improve</b><p>Turn trends into better stays.</p></div></section>
-<section class="bottom-cta"><div><div class="eyebrow">BUILT FOR HOSPITALITY</div><h2>Better feedback.<br><em>Better experiences.</em></h2></div><a class="button dark" href="{{ url_for('review', slug=hotel['slug']) }}">Try the guest page <span>↗</span></a></section>
-{% endblock %}
+
+    <div class="l-cards" id="how">
+      <article class="l-card">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 20h4v-3"/></svg>
+        <h3>Scan</h3>
+        <p>A QR code on the bill or at reception. No app, no login.</p>
+      </article>
+      <article class="l-card">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.84 5.75 6.35.92-4.6 4.48 1.09 6.32L12 17.29l-5.68 2.98 1.09-6.32-4.6-4.48 6.35-.92z" stroke-linejoin="round"/></svg>
+        <h3>Rate</h3>
+        <p>Guests tap 1–5 stars, then pick what stood out or went wrong.</p>
+      </article>
+      <article class="l-card">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+        <h3>Improve</h3>
+        <p>Trends, tags and contact requests land on your dashboard.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="l-right">
+    <div class="l-visual" aria-hidden="true">
+      <div class="l-phone">
+        <div class="l-phone-head"><span class="l-dot">{{ hotel['hotel_name'][:1]|upper }}</span><span><b>{{ hotel['hotel_name'] }}</b><small>Table 12 · Tonight</small></span></div>
+        <p class="l-phone-q">How was your visit tonight?</p>
+        <div class="l-phone-stars">{% for i in range(5) %}<svg viewBox="0 0 24 24" class="{{ 'on' if i < 4 }}"><path d="M12 2.8l2.84 5.75 6.35.92-4.6 4.48 1.09 6.32L12 17.29l-5.68 2.98 1.09-6.32-4.6-4.48 6.35-.92z"/></svg>{% endfor %}</div>
+        <div class="l-phone-chips"><span class="on">Friendly service</span><span>Good value</span><span class="on">Great atmosphere</span></div>
+        <div class="l-phone-btn">Send feedback</div>
+      </div>
+    </div>
+
+    <div class="l-about" id="about">
+      <h2>About</h2>
+      <p>StaySignal is a private feedback channel for hotels and restaurants. Every guest sees the same optional Google review link afterwards, whatever they rated, so you get honest answers and stay within Google's review policy.</p>
+    </div>
+  </section>
+</main>
+
+<footer class="l-foot">
+  <span>© {{ current_year }} StaySignal</span>
+  <span>Guest feedback, made useful.</span>
+</footer>
+<script>document.querySelectorAll('.l-links a').forEach(function (a) { a.addEventListener('click', function () { document.getElementById('l-menu').checked = false; }); });</script>
+</body>
+</html>
